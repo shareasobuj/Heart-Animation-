@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Heart Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #1a0011, #000000);
+            overflow: hidden;
+            cursor: pointer;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* মূল হার্ট ডিজাইন */
+        .heart {
+            position: relative;
+            width: 100px;
+            height: 90px;
+            background-color: #ff2a74;
+            transform: rotate(-45deg);
+            box-shadow: 0 0 40px #ff2a74, 0 0 80px #ff2a74;
+            animation: beat 1.2s infinite ease-in-out;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: #ff2a74;
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -50px;
+            left: 0;
+        }
+
+        .heart::after {
+            left: 50px;
+            top: 0;
+        }
+
+        /* হার্ট বিট অ্যানিমেশন */
+        @keyframes beat {
+            0% {
+                transform: scale(1) rotate(-45deg);
+            }
+            20% {
+                transform: scale(1.25) rotate(-45deg);
+            }
+            40% {
+                transform: scale(1.1) rotate(-45deg);
+            }
+            60% {
+                transform: scale(1.35) rotate(-45deg);
+            }
+            100% {
+                transform: scale(1) rotate(-45deg);
+            }
+        }
+
+        /* ক্লিক করলে যে কণাগুলো বের হবে তার স্টাইল */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 24px;
+            animation: floatUp 1s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y)) scale(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- মূল হার্ট এলিমেন্ট -->
+    <div class="heart" id="mainHeart"></div>
+
+    <script>
+        const heart = document.getElementById('mainHeart');
+
+        // স্ক্রিনের যেকোনো জায়গায় ক্লিক করলে হার্ট ইফেক্ট তৈরি হবে
+        window.addEventListener('click', (e) => {
+            createParticles(e.clientX, e.clientY);
+        });
+
+        // মূল হার্টের ওপর মাউস নিলেও ইফেক্ট হবে
+        heart.addEventListener('mouseover', (e) => {
+            createParticles(e.clientX, e.clientY);
+        });
+
+        function createParticles(x, y) {
+            // একসাথে ১০টি ছোট হার্ট তৈরি হবে
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.innerHTML = '❤️'; // আপনি চাইলে এখানে অন্য ইমোজি বা প্রতীক দিতে পারেন
+
+                // কণাগুলোর পজিশন সেট করা
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+
+                // জাভাস্ক্রিপ্ট দিয়ে CSS Variable-এ র্যান্ডম দিক (Direction) পাঠানো
+                const destinationX = (Math.random() - 0.5) * 300;
+                const destinationY = (Math.random() - 0.5) * 300;
+
+                particle.style.setProperty('--x', `${destinationX}px`);
+                particle.style.setProperty('--y', `${destinationY}px`);
+                
+                // সাইজ র্যান্ডম করা
+                const randomSize = Math.random() * 20 + 10;
+                particle.style.fontSize = `${randomSize}px`;
+
+                document.body.appendChild(particle);
+
+                // অ্যানিমেশন শেষ হলে এলিমেন্টটি ডিলেট করে দেওয়া
+                setTimeout(() => {
+                    particle.remove();
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
